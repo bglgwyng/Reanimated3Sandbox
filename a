@@ -1,0 +1,8 @@
+yarn run v1.22.19
+$ react-native run-ios --device iPhone
+info Found Xcode workspace "Reanimated3Sandbox.xcworkspace"
+info Building (using "xcodebuild -workspace Reanimated3Sandbox.xcworkspace -configuration Debug -scheme Reanimated3Sandbox -destination id=00008110-000255012147801E")
+success Successfully built the app
+info Installing and launching your app on iPhone
+success Installed the app on the device.
+Done in 81.87s.
