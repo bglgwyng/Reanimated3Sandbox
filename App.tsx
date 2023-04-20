@@ -5,30 +5,50 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
+import React, {memo, useLayoutEffect, useReducer, useRef} from 'react';
+import {Animated, Button, StyleSheet, View} from 'react-native';
+import Reanimated, {
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 
-function App(): JSX.Element {
-  const [foo, setFoo] = useState(false);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setFoo(foo => !foo);
-    }, 50);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+const Example1 = memo(() => {
+  const [x, toggle] = useReducer(x => !x, false);
+  const t = useSharedValue(false);
+
+  useLayoutEffect(() => {
+    t.value = x;
+  }, [t, x]);
+
+  const style = useAnimatedStyle(
+    () => ({
+      width: t.value ? 100 : 0,
+      height: t.value ? 100 : 0,
+    }),
+    [t],
+  );
 
   return (
+    <View
+      style={[
+        StyleSheet.absoluteFill,
+        {alignItems: 'center', justifyContent: 'center'},
+      ]}>
+      <View
+        style={{width: 200, height: 200, backgroundColor: x ? 'red' : 'blue'}}>
+        <Reanimated.View style={[style, {backgroundColor: 'green'}]} />
+      </View>
+      <View style={{marginTop: 10}}>
+        <Button title="Press me" onPress={toggle} />
+      </View>
+    </View>
+  );
+});
+
+function App(): JSX.Element {
+  return (
     <View style={{flexGrow: 1}}>
-      {foo && (
-        <Animated.View
-          entering={FadeIn}
-          exiting={FadeOut}
-          style={[StyleSheet.absoluteFill, {backgroundColor: 'blue'}]}
-        />
-      )}
+      <Example1 />
     </View>
   );
 }
