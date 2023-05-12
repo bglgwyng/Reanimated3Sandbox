@@ -7,84 +7,16 @@
 
 import React, {
   memo,
-  useCallback,
   useEffect,
   useLayoutEffect,
   useReducer,
   useState,
 } from 'react';
-import {Button, StyleSheet, View, useWindowDimensions} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from 'react-native-reanimated';
-
-const Example2 = memo(() => {
-  const {width} = useWindowDimensions();
-
-  const [index, setIndex] = useState(0);
-  const translate = useSharedValue(0);
-
-  useLayoutEffect(() => {
-    translate.value = 0;
-  }, [index, translate]);
-
-  const goRight = useCallback(() => {
-    translate.value = withTiming(-width, {duration: 500}, finished => {
-      if (finished) {
-        runOnJS(setIndex)(1);
-      }
-    });
-  }, [translate, width]);
-
-  const goLeft = useCallback(() => {
-    translate.value = withTiming(width, {duration: 500}, finished => {
-      if (finished) {
-        runOnJS(setIndex)(0);
-      }
-    });
-  }, [translate, width]);
-
-  useEffect(() => {
-    let live = true;
-    (async () => {
-      while (live) {
-        goRight();
-        await new Promise<void>(resolve => setTimeout(resolve, 1000));
-        goLeft();
-        await new Promise<void>(resolve => setTimeout(resolve, 1000));
-      }
-    })();
-    return () => {
-      live = false;
-    };
-  }, [goLeft, goRight]);
-
-  const style1 = useAnimatedStyle(() => {
-    return {
-      width: '100%',
-      transform: [{translateX: translate.value}],
-    };
-  }, [translate]);
-
-  return (
-    <Animated.View style={style1}>
-      <Animated.View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'stretch',
-          height: '100%',
-          transform: [{translateX: -index * width}],
-        }}>
-        <View style={{width, backgroundColor: 'red'}} />
-        <View style={{width, backgroundColor: 'blue'}} />
-      </Animated.View>
-    </Animated.View>
-  );
-});
-
 const Example1 = memo(() => {
   const [x, toggle] = useReducer(x => !x, false);
   const t = useSharedValue(false);
@@ -128,8 +60,7 @@ function App(): JSX.Element {
   return (
     <>
       {foo && new Array(1000).fill(0).map((_, i) => <View key={i} />)}
-      {/* <Example1 /> */}
-      <Example2 />
+      <Example1 />
     </>
   );
 }
