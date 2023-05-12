@@ -32,7 +32,7 @@ const Example2 = memo(() => {
   }, [index, translate]);
 
   const goRight = useCallback(() => {
-    translate.value = withTiming(-width, {duration: 200}, finished => {
+    translate.value = withTiming(-width, {duration: 500}, finished => {
       if (finished) {
         runOnJS(setIndex)(1);
       }
@@ -40,7 +40,7 @@ const Example2 = memo(() => {
   }, [translate, width]);
 
   const goLeft = useCallback(() => {
-    translate.value = withTiming(width, {duration: 200}, finished => {
+    translate.value = withTiming(width, {duration: 500}, finished => {
       if (finished) {
         runOnJS(setIndex)(0);
       }
@@ -52,9 +52,9 @@ const Example2 = memo(() => {
     (async () => {
       while (live) {
         goRight();
-        await new Promise<void>(resolve => setTimeout(resolve, 400));
+        await new Promise<void>(resolve => setTimeout(resolve, 1000));
         goLeft();
-        await new Promise<void>(resolve => setTimeout(resolve, 400));
+        await new Promise<void>(resolve => setTimeout(resolve, 1000));
       }
     })();
     return () => {
@@ -119,8 +119,15 @@ const Example1 = memo(() => {
 });
 
 function App(): JSX.Element {
+  const [foo, setFoo] = useState(false);
+  useEffect(() => {
+    setInterval(() => {
+      setFoo(x => !x);
+    }, 100);
+  }, []);
   return (
     <>
+      {foo && new Array(1000).fill(0).map((_, i) => <View key={i} />)}
       {/* <Example1 /> */}
       <Example2 />
     </>
